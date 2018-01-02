@@ -6,7 +6,7 @@
     "server": "nodemon server.js",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
     "start": "node server.js",
-    "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
+    "heroku-postbuild": "cd client && npm install --save-dev && npm install --save-exact && npm run build"
   },
   "dependencies": {
     "express": "^4.16.2"
