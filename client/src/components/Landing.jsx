@@ -5,7 +5,7 @@ class Landing extends Component {
   render() {
     return (
       <div className="landing">
-        <h2>Secret Hitler</h2>
+        <div className="title">Secret Hitler</div>
         <button className="btn btn-outline-dark">Create</button>
         <button className="btn btn-outline-dark">Join</button>
       </div>

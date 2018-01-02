@@ -31,3 +31,10 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.title {
+  font-family: 'bungee', 'courier', 'sans-serif';
+  font-weight: 800;
+  font-size: 3em;
+  margin-bottom: 20px;
+}

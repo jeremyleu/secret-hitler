@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Typekit from 'react-typekit';
 
 import './App.scss';
 import Landing from './components/Landing';
@@ -27,6 +28,7 @@ class App extends Component {
     return (
       <div className="App">
         <Landing />
+        <Typekit kitId="yfs1mos" />
       </div>
     );
   }
