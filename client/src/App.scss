@@ -1,6 +1,6 @@
 .App {
   text-align: center;
-  width: 100vw;
+  width: 100 vw;
   height: 100vh;
   display: flex;
   align-items: center;
@@ -35,6 +35,10 @@
 .title {
   font-family: 'bungee', 'courier', 'sans-serif';
   font-weight: 800;
-  font-size: 3em;
+  font-size: 2.4em;
   margin-bottom: 20px;
+}
+
+.btn {
+  margin: 4px;
 }

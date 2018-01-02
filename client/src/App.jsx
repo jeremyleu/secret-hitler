@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
+import { Provider } from 'react-redux';
 import Typekit from 'react-typekit';
+import { createStore, combineReducers } from 'redux';
 
 import './App.scss';
-import Landing from './components/Landing';
+import Container from './components/Container';
+
+const reducer = combineReducers(
+  Object.assign({}, require('./reducers'))
+);
+
+const store = createStore(
+  reducer
+);
 
 class App extends Component {
   state = {
@@ -27,7 +37,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Landing />
+        <Provider store={store}>
+          <Container />
+        </Provider>
         <Typekit kitId="yfs1mos" />
       </div>
     );
