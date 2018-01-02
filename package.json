@@ -1,6 +1,9 @@
 {
   "name": "secret-hitler",
   "version": "1.0.0",
+  "engines": {
+    "node": "8.9.2"
+  },
   "scripts": {
     "client": "cd client && yarn start",
     "server": "nodemon server.js",
