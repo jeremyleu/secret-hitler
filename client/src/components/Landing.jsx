@@ -9,12 +9,15 @@ class Landing extends Component {
   handleCreateClicked = () => {
     this.props.dispatch(changeView('create'));
   }
+  handleJoinClicked = () => {
+    this.props.dispatch(changeView('join'));
+  }
   render() {
     return (
       <div className="landing">
         <div className="title">Secret Hitler</div>
         <button className="btn btn-outline-dark" onClick={this.handleCreateClicked}>Create</button>
-        <button className="btn btn-outline-dark">Join</button>
+        <button className="btn btn-outline-dark" onClick={this.handleJoinClicked}>Join</button>
       </div>
     )
   }
