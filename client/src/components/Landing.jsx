@@ -6,18 +6,18 @@ import { changeView } from '../actions';
 import './Landing.scss';
 
 class Landing extends Component {
-  createClicked = () => {
+  handleCreateClicked = () => {
     this.props.dispatch(changeView('create'));
   }
-  joinClicked = () => {
+  handleJoinClicked = () => {
     this.props.dispatch(changeView('join'));
   }
   render() {
     return (
       <div className="landing">
         <div className="title">Secret Hitler</div>
-        <button className="btn btn-outline-dark" onClick={this.createClicked}>Create</button>
-        <button className="btn btn-outline-dark" onClick={this.joinClicked}>Join</button>
+        <button className="btn btn-outline-dark" onClick={this.handleCreateClicked}>Create</button>
+        <button className="btn btn-outline-dark" onClick={this.handleJoinClicked}>Join</button>
       </div>
     )
   }

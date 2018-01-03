@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { changeView } from '../actions';
 
 class CreateGame extends Component {
-  handleSubmitClicked = () => {
+  handleCreateClicked = () => {
     // this.props.dispatch(createRoom());
   }
   handleCancelClicked = () => {
@@ -16,7 +16,7 @@ class CreateGame extends Component {
         <div className="title">Secret Hitler</div>
         <input type="text" className="host-name-input form-control" placeholder="Enter your name" />
         <br />
-        <button className="btn btn-outline-dark" onClick={this.handleSubmitClicked}>Submit</button>
+        <button className="btn btn-outline-dark" onClick={this.handleCreateClicked}>Create</button>
         <button className="btn btn-outline-dark" onClick={this.handleCancelClicked}>Cancel</button>
       </div>
     )

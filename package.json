@@ -12,7 +12,8 @@
     "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
