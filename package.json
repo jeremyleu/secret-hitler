@@ -2,7 +2,7 @@
   "name": "secret-hitler",
   "version": "1.0.0",
   "engines": {
-    "node": "8.9.2"
+    "node": ">=8.0"
   },
   "scripts": {
     "client": "cd client && yarn start",
