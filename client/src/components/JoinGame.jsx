@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { changeView } from '../actions';
+import ShadowButton from './ShadowButton';
 
 class JoinGame extends Component {
-  handleSubmitClicked = () => {
+  handleJoinClicked = () => {
 
   }
   handleCancelClicked = () => {
@@ -17,8 +18,8 @@ class JoinGame extends Component {
         <input type="text" className="host-key-input form-control" placeholder="Enter the room key" />
         <input type="text" className="host-name-input form-control" placeholder="Enter your name" />
         <br />
-        <button className="btn btn-outline-dark" onClick={this.handleSubmitClicked}>Join</button>
-        <button className="btn btn-outline-dark" onClick={this.handleCancelClicked}>Cancel</button>
+        <ShadowButton text="Join" onClick={this.handleJoinClicked} />
+        <ShadowButton text="Cancel" onClick={this.handleCancelClicked} />
       </div>
     )
   }

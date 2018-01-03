@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import { changeView } from '../actions';
 
+import ShadowButton from './ShadowButton';
 import './Landing.scss';
 
 class Landing extends Component {
@@ -16,8 +17,8 @@ class Landing extends Component {
     return (
       <div className="landing">
         <div className="title">Secret Hitler</div>
-        <button className="btn btn-outline-dark" onClick={this.handleCreateClicked}>Create</button>
-        <button className="btn btn-outline-dark" onClick={this.handleJoinClicked}>Join</button>
+        <ShadowButton text="Create" onClick={this.handleCreateClicked} />
+        <ShadowButton text="Join" onClick={this.handleJoinClicked} />
       </div>
     )
   }

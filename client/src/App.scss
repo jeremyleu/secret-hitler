@@ -1,3 +1,5 @@
+@import "./_custom";
+
 .App {
   text-align: center;
   width: 100 vw;
@@ -39,6 +41,13 @@
   margin-bottom: 20px;
 }
 
-.btn {
-  margin: 4px;
+.btn-outline-dark, .btn-outline-dark:active, .btn-outline-dark:focus, .btn-outline-dark:visited,
+input[type=text], input[type=text]:active, input[type=text]:focus {
+  box-sizing: border-box;
+  margin: 10px;
+  box-shadow: makelongshadow(#000, 7) !important;
+  border: 1px solid #000 !important;
+  background: #fff !important;
+  color: #000;
+  transition: none;
 }
