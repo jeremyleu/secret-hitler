@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Landing from './Landing';
 import CreateGame from './CreateGame';
 import './Container.scss';
-
+import JoinGame from './JoinGame';
 class Container extends Component {
   chooseView = (view) => {
     switch(view) {
@@ -12,8 +12,8 @@ class Container extends Component {
         return <Landing />;
       case 'create':
         return <CreateGame />;
-      // case 'join':
-      //   return <JoinGame />;
+       case 'join':
+         return <JoinGame />;
       default:
         return null;
     }
