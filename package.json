@@ -2,7 +2,7 @@
   "name": "secret-hitler",
   "version": "1.0.0",
   "engines": {
-    "node": "8.9.2"
+    "node": "8.9.3"
   },
   "scripts": {
     "client": "cd client && yarn start",
@@ -12,7 +12,8 @@
     "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.1.2",
