@@ -12,6 +12,7 @@
     "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "dependencies": {
+    "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "redis": "^2.8.0"
   },
@@ -24,6 +25,7 @@
     "eslint-plugin-jsx-a11y": "6.0.2",
     "eslint-plugin-react": "7.4.0",
     "gulp": "^3.9.1",
-    "nodemon": "^1.14.7"
+    "nodemon": "^1.14.7",
+    "redux-logger": "^3.0.6"
   }
 }

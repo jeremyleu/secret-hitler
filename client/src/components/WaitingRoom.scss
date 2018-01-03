@@ -1,0 +1,13 @@
+@import "../_custom";
+
+.player-list {
+  box-shadow: makelongshadow(#000, 7);
+  border-radius: 0.25rem;
+
+  .player-list-item {
+    border: 1px solid #000;
+    &.self {
+      background-color: #ddd;
+    }
+  }
+}

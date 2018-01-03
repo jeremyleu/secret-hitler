@@ -16,7 +16,6 @@ class Landing extends Component {
   render() {
     return (
       <div className="landing">
-        <div className="title">Secret Hitler</div>
         <ShadowButton text="Create" onClick={this.handleCreateClicked} />
         <ShadowButton text="Join" onClick={this.handleJoinClicked} />
       </div>
