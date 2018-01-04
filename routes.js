@@ -10,7 +10,7 @@ router.post('/api/createRoom', (req, res) => {
   const { roomKey, hostName } = req.body;
 
   if (rooms[roomKey]) {
-    res.status(409).send(`Room with key ${roomKey} already exists.`);
+    res.status(409).send(`Room with key '${roomKey}' already exists.`);
   } else {
     const newGame = {
       host: hostName,
@@ -31,7 +31,7 @@ router.put('/api/joinRoom', (req, res) => {
 
   if (game) {
     if (getPlayer(game, name)) {
-      res.status(409).send(`Player with name ${name} in room with key ${roomKey} already exists.`);
+      res.status(409).send(`Player with name '${name}' in room with key '${roomKey}' already exists.`);
     } else {
       game.players.push({
         name,
