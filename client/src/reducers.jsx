@@ -26,6 +26,8 @@ export function error(state = null, action) {
   switch(action.type) {
     case RECEIVE_ERROR:
       return action.error;
+    case RECEIVE_ROOM:
+      return null;
     case CHANGE_VIEW:
       return null;
     default:
