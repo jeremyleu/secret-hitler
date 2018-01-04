@@ -23,10 +23,12 @@ class Container extends Component {
     }
   }
   render() {
+    const {view, error} = this.props;
     return (
       <div className="container">
         <div className="title">Secret Hitler</div>
-        {this.chooseView(this.props.view)}
+        {error && <div className="error">{error}</div>}
+        {this.chooseView(view)}
       </div>
     );
   }

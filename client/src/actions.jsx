@@ -13,20 +13,19 @@ export const createRoom = (hostName, roomKey) => {
       body: JSON.stringify({ hostName, roomKey }),
     }).then((response) => {
       if (response.status !== 200) {
-        throw Error(response.statusText);
+        throw new Error(response.statusText);
       } else {
         return response.json();
       }
     }).then((room) => {
       dispatch(receiveRoom(hostName, room));
     }).catch((err) => {
-      dispatch(receiveError(err));
+      dispatch(receiveError(err.message));
     });
   }
 }
 
 export const joinRoom = (name, roomKey) => {
-  console.log({name, roomKey});
   return dispatch => {
     return fetch('/api/joinRoom', {
       method: 'put',
@@ -37,14 +36,14 @@ export const joinRoom = (name, roomKey) => {
       body: JSON.stringify({ name, roomKey }),
     }).then((response) => {
       if (response.status !== 200) {
-        throw Error(response.statusText);
+        throw new Error(response.statusText);
       } else {
         return response.json();
       }
     }).then((room) => {
       dispatch(receiveRoom(name, room));
     }).catch((err) => {
-      dispatch(receiveError(err));
+      dispatch(receiveError(err.message));
     });
   }
 }

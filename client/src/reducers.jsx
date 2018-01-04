@@ -22,6 +22,17 @@ export function name(state = null, action) {
   }
 }
 
+export function error(state = null, action) {
+  switch(action.type) {
+    case RECEIVE_ERROR:
+      return action.error;
+    case CHANGE_VIEW:
+      return null;
+    default:
+      return state;
+  }
+}
+
 export function view(state = 'landing', action) {
   switch(action.type) {
     case CHANGE_VIEW:
