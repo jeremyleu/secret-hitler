@@ -6,6 +6,7 @@ export const createRoom = (hostName, roomKey) => {
   return dispatch => {
     return fetch('/api/createRoom', {
       method: 'post',
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
@@ -29,6 +30,7 @@ export const joinRoom = (name, roomKey) => {
   return dispatch => {
     return fetch('/api/joinRoom', {
       method: 'put',
+      credentials: 'same-origin',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
