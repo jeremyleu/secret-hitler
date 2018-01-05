@@ -27,6 +27,7 @@ app.use(session({
   store: new RedisStore(options),
   secret: 'cheerslitter',
   resave: false,
+  saveUninitialized: true,
 }));
 
 client.on('connect', () => {
