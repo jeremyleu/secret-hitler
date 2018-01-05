@@ -12,10 +12,6 @@ app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'client/build')));
 
-app.use(require('./routes'));
-
-app.listen(port, () => console.log(`Listening on port ${port}`));
-
 const client = process.env.REDIS_URL ? redis.createClient(process.env.REDIS_URL) :
   redis.createClient();
 
@@ -28,11 +24,16 @@ app.use(session({
   secret: 'cheerslitter',
   resave: false,
   saveUninitialized: true,
+  proxy: true,
 }));
 
 client.on('connect', () => {
   console.log('connected to redis');
   app.set('redisClient', client);
 });
+
+app.use(require('./routes'));
+
+app.listen(port, () => console.log(`Listening on port ${port}`));
 
 app.set('rooms', {});
