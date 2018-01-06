@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import './WaitingRoom.scss';
 
 class WaitingRoom extends Component {
-
   render() {
     const { room, name } = this.props;
     return (
