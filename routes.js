@@ -50,6 +50,7 @@ router.post('/api/createRoom', (req, res) => {
 router.put('/api/joinRoom', (req, res) => {
   const rooms = req.app.get('rooms');
   const { name, roomKey } = req.body;
+  const io = req.app.get('socket.io');
   const game = rooms[roomKey];
 
   if (game) {
@@ -62,6 +63,12 @@ router.put('/api/joinRoom', (req, res) => {
       rooms[roomKey] = game;
       req.session.roomKey = roomKey;
       console.log(req.sessionID);
+      io.sockets.on('connection', (socket) => {
+        console.log('Connected');
+        socket.on('join', (data) => {
+          console.log(`new connection: ${data.id}`);
+        });
+      });
       res.send(game);
     }
   } else {
