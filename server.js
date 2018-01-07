@@ -8,6 +8,19 @@ const RedisStore = require('connect-redis')(session);
 const app = express();
 const port = process.env.PORT || 5000;
 
+const io = require('socket.io').listen(port);
+
+app.get('/', (req, res) => {
+  res.sendFile.path.join(__dirname, './public/index.html');
+});
+
+io.sockets.on('connection', (socket) => {
+  socket.emit('joined', { hello: 'person' });
+  socket.on('new person', (data) => {
+    console.log(data);
+  });
+});
+
 app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'client/build')));
