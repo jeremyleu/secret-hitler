@@ -3,7 +3,6 @@ import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 import Typekit from 'react-typekit';
 import { createStore, combineReducers, compose, applyMiddleware } from 'redux';
-import socketIOClient from 'socket.io-client';
 
 import './App.scss';
 import Container from './components/Container';
@@ -25,7 +24,6 @@ class App extends Component {
   };
 
   render() {
-    const socket = socketIOClient('http://localhost:5000');
     return (
       <div className="App">
         <Provider store={store}>

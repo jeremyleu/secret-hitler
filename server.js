@@ -33,7 +33,7 @@ app.use(sessionMiddleware);
 
 client.on('connect', () => {
   console.log('connected to redis');
-  app.set('redisClient', client);
+  app.locals.redisClient = client;
 });
 
 const server = app.listen(port, () => console.log(`Listening on port ${port}`));
@@ -44,8 +44,12 @@ io.use((socket, next) => {
   sessionMiddleware(socket.request, socket.request.res, next);
 });
 
+const events = require('./socket-events');
+
 io.sockets.on('connection', (socket) => {
   console.log('connected to socket.io');
+
+  events.initGame(io, socket, app);
 
   socket.on('disconnect', () => {
     console.log('disconnected');
