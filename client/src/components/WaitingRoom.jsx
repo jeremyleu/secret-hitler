@@ -2,15 +2,24 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import './WaitingRoom.scss';
+import socket from '../socket';
+import { updatePlayers } from '../actions';
 
 class WaitingRoom extends Component {
+  constructor(props) {
+    super(props);
+    const { dispatch } = this.props;
+    socket.on('playerJoinSuccess', (players) => {
+      dispatch(updatePlayers(players));
+    });
+  }
 
   render() {
-    const { room, name } = this.props;
+    const { players, name } = this.props;
     return (
       <div className="waiting-room">
         <ul className="player-list list-group">
-          {room.players.map(player => (
+          {players.map(player => (
             <li className={`player-list-item list-group-item ${name === player.name && 'self'}`} key={`${player.name}-list-item`}>
               {player.name}
             </li>
