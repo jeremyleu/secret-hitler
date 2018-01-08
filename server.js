@@ -5,7 +5,9 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
 
+
 const app = express();
+
 const port = process.env.PORT || 5000;
 
 app.use(bodyParser.json());
@@ -19,21 +21,37 @@ const options = {
   client,
 };
 
-app.use(session({
+const sessionMiddleware = session({
   store: new RedisStore(options),
   secret: 'cheerslitter',
   resave: false,
   saveUninitialized: true,
   proxy: true,
-}));
+});
+
+app.use(sessionMiddleware);
 
 client.on('connect', () => {
   console.log('connected to redis');
   app.set('redisClient', client);
 });
 
+const server = app.listen(port, () => console.log(`Listening on port ${port}`));
+
+const io = require('socket.io')(server);
+
+io.use((socket, next) => {
+  sessionMiddleware(socket.request, socket.request.res, next);
+});
+
+io.sockets.on('connection', (socket) => {
+  console.log('connected to socket.io');
+
+  socket.on('disconnect', () => {
+    console.log('disconnected');
+  });
+});
+
 app.use(require('./routes'));
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
-
-app.set('rooms', {});
+app.locals.rooms = {};

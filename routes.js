@@ -18,17 +18,8 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/foo', (req, res, next) => {
-  res.send(`you viewed this page ${req.session.views} times`);
-});
-
-router.get('/bar', (req, res, next) => {
-  res.send(`you viewed this page ${req.session.views} times`);
-});
-
 router.post('/api/createRoom', (req, res) => {
-  const rooms = req.app.get('rooms');
-  const { roomKey, hostName } = req.body;
+  const { app: { locals: { rooms } }, body: { hostName, roomKey } } = req;
 
   if (rooms[roomKey]) {
     res.status(409).send(`Room with key '${roomKey}' already exists.`);
@@ -42,14 +33,13 @@ router.post('/api/createRoom', (req, res) => {
     };
     rooms[roomKey] = newGame;
     req.session.roomKey = roomKey;
-    console.log(req.sessionID);
+    // console.log(req.sessionID);
     res.send(newGame);
   }
 });
 
 router.put('/api/joinRoom', (req, res) => {
-  const rooms = req.app.get('rooms');
-  const { name, roomKey } = req.body;
+  const { app: { locals: { rooms } }, body: { name, roomKey } } = req;
   const game = rooms[roomKey];
 
   if (game) {
@@ -61,7 +51,7 @@ router.put('/api/joinRoom', (req, res) => {
       });
       rooms[roomKey] = game;
       req.session.roomKey = roomKey;
-      console.log(req.sessionID);
+      // console.log(req.sessionID);
       res.send(game);
     }
   } else {
