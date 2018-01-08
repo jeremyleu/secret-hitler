@@ -33,7 +33,7 @@ function generateUniqueId(allGames, length) {
 
 exports.initGame = (io, socket, app) => {
   const { locals: { currentGames, allGames } } = app;
-  const { handshake: { session, session: { gameId } } } = socket;
+  const { request: { session, session: { gameId } } } = socket;
 
   console.log('38', session);
 
