@@ -4,7 +4,7 @@ const redis = require('redis');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const RedisStore = require('connect-redis')(session);
-const sharedsession = require("express-socket.io-session");
+const sharedsession = require('express-socket.io-session');
 
 const app = express();
 const server = require('http').createServer(app);
