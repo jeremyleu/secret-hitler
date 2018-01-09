@@ -33,25 +33,31 @@ function generateUniqueId(allGames, length) {
 
 exports.initGame = (io, socket, app) => {
   const { locals: { currentGames, allGames } } = app;
-  const { request: { session, session: { gameId } } } = socket;
+  const { handshake: { session, session: { gameId } } } = socket;
 
-  console.log('38', session);
-
-  if (allGames[gameId] && session.playerName) {
-    const game = allGames[gameId];
-    socket.emit(GAME_RETRIEVED, {
-      state: game.state,
-      name: session.playerName,
-      players: game.players,
-    });
+  function attemptReconnect() {
+    if (allGames[gameId] && session.playerName) {
+      const game = allGames[gameId];
+      socket.emit(GAME_RETRIEVED, {
+        state: game.state,
+        name: session.playerName,
+        players: game.players,
+      });
+      return true;
+    }
+    return false;
   }
 
+  attemptReconnect();
+
   function joinGame(game, name) {
-    session.gameId = game.id;
+    if (attemptReconnect()) { // attempt to reconnect if user is already in a game
+      return;
+    }
+    session.gameId = game.id; // save game information in session
     session.playerName = name;
     session.save((err) => { console.log(err || 'session saved'); });
-    console.log('53', session);
-    socket.join(game.key);
+    socket.join(game.key); // join socket room
   }
 
   socket.on('createGame', (hostName, key) => {
