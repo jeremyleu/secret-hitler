@@ -1,16 +1,15 @@
 /* eslint-disable no-await-in-loop */
 
-const getPlayer = (game, name) => game.players.find(player =>
-  (player.name.toUpperCase() === name.toUpperCase()));
-
-const MAX_PLAYERS = 10;
-const JOIN_ERROR = 'joinError';
-const JOIN_SUCCESS = 'joinSuccess';
-const CREATE_SUCCESS = 'createSuccess';
-const PLAYER_JOIN_SUCCESS = 'playerJoinSuccess';
-const GAME_RETRIEVED = 'gameRetrieved';
-const GAME_ID_LENGTH = 10;
-const WAITING_ROOM = 'waitingRoom';
+import {
+  JOIN_ERROR,
+  JOIN_SUCCESS,
+  CREATE_SUCCESS,
+  PLAYER_JOIN_SUCCESS,
+  GAME_RETRIEVED,
+  GAME_ID_LENGTH,
+  WAITING_ROOM,
+} from './constants';
+import Game from './Game';
 
 function generateId(length) {
   let id = '';
@@ -67,19 +66,11 @@ exports.initGame = (io, socket, app) => {
       socket.emit(JOIN_ERROR, `Room (key '${roomKey}') already exists.`);
     } else {
       const id = generateUniqueId(allGames, GAME_ID_LENGTH);
-      const newGame = {
-        id,
-        host: hostName,
-        key: roomKey,
-        state: WAITING_ROOM,
-        players: [{
-          name: hostName,
-        }],
-      };
+      const newGame = new Game(id, hostName, roomKey);
       allGames[id] = newGame;
       currentGames[roomKey] = newGame;
       joinGame(newGame, hostName);
-      socket.emit(CREATE_SUCCESS, { name: hostName, players: newGame.players });
+      socket.emit(CREATE_SUCCESS, { name: hostName, players: newGame.getPlayers() });
     }
   });
 
@@ -88,17 +79,13 @@ exports.initGame = (io, socket, app) => {
     const game = currentGames[roomKey];
 
     if (game) {
-      if (getPlayer(game, playerName)) {
-        socket.emit(JOIN_ERROR, `Player with name '${playerName}' in room (key '${roomKey}') already exists.`);
-      } else if (game.players.length >= MAX_PLAYERS) {
-        socket.emit(JOIN_ERROR, `Room (key ${roomKey}) is full.`);
-      } else {
-        game.players.push({
-          name: playerName,
-        });
+      const result = game.addPlayer(playerName);
+      if (result.ok) {
         joinGame(game, playerName);
-        socket.emit(JOIN_SUCCESS, { name: playerName, players: game.players });
-        socket.broadcast.to(roomKey).emit(PLAYER_JOIN_SUCCESS, game.players);
+        socket.emit(JOIN_SUCCESS, { name: playerName, players: game.getPlayers() });
+        socket.broadcast.to(roomKey).emit(PLAYER_JOIN_SUCCESS, game.getPlayers());
+      } else {
+        socket.emit(JOIN_ERROR, result.error);
       }
     } else {
       socket.emit(JOIN_ERROR, `Room (key '${roomKey}') does not exist.`);
