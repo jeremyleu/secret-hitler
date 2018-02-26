@@ -19,9 +19,9 @@ class WaitingRoom extends Component {
     return (
       <div className="waiting-room">
         <ul className="player-list list-group">
-          {players.map(player => (
-            <li className={`player-list-item list-group-item ${name === player.name && 'self'}`} key={`${player.name}-list-item`}>
-              {player.name}
+          {players.map(playerName => (
+            <li className={`player-list-item list-group-item ${name === playerName && 'self'}`} key={`${playerName}-list-item`}>
+              {playerName}
             </li>
           ))}
         </ul>

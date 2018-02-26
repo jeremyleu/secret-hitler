@@ -2,9 +2,11 @@ const express = require('express');
 const path = require('path');
 const redis = require('redis');
 const bodyParser = require('body-parser');
-const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const expressSession = require('express-session');
+const RedisStore = require('connect-redis')(expressSession);
 const sharedsession = require('express-socket.io-session');
+
+import { initGame } from './socket-events';
 
 const app = express();
 const server = require('http').createServer(app);
@@ -16,7 +18,7 @@ const options = {
   client,
 };
 
-const sessionMiddleware = session({
+const sessionMiddleware = expressSession({
   name: 'server-session-cookie-id',
   store: new RedisStore(options),
   secret: 'cheerslitter',
@@ -38,8 +40,6 @@ const io = require('socket.io').listen(server);
 
 io.use(sharedsession(sessionMiddleware));
 
-const events = require('./socket-events');
-
 io.sockets.on('connection', (socket) => {
   console.log('connected to socket.io');
   const { handshake: { session } } = socket;
@@ -49,7 +49,7 @@ io.sockets.on('connection', (socket) => {
     console.log("error: " + err);
   });
 
-  events.initGame(io, socket, app);
+  initGame(io, socket, app);
 
   socket.on('disconnect', () => {
     console.log('disconnected');

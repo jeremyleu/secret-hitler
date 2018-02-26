@@ -6,9 +6,9 @@
   },
   "scripts": {
     "client": "cd client && yarn start",
-    "server": "nodemon server.js",
+    "server": "nodemon server.js --exec babel-node",
     "dev": "concurrently --kill-others-on-fail \"yarn server\" \"yarn client\"",
-    "start": "node server.js",
+    "start": "babel-node server.js",
     "heroku-postbuild": "cd client && yarn --production=false && yarn run build"
   },
   "dependencies": {
@@ -21,7 +21,11 @@
     "socket.io": "^2.0.4"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
     "babel-eslint": "^8.1.2",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
     "concurrently": "^3.5.0",
     "eslint": "4.9.0",
     "eslint-config-airbnb": "16.1.0",
