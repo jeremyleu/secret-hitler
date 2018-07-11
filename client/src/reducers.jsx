@@ -3,6 +3,7 @@ import {
   RECEIVE_ROOM,
   RECEIVE_ERROR,
   UPDATE_PLAYERS,
+  RECEIVE_HOST_ROOM
 } from './actions';
 
 export function players(state = null, action) {
@@ -20,6 +21,15 @@ export function name(state = null, action) {
   switch(action.type) {
     case RECEIVE_ROOM:
       return action.name;
+    default:
+      return state;
+  }
+}
+
+export function isHost(state = null, action){
+  switch(action.type) {
+    case RECEIVE_ROOM:
+      return action.isHost;
     default:
       return state;
   }
@@ -43,6 +53,8 @@ export function view(state = 'landing', action) {
     case CHANGE_VIEW:
       return action.newView;
     case RECEIVE_ROOM:
+      return 'waiting';
+    case RECEIVE_HOST_ROOM:
       return 'waiting';
     default:
       return state;

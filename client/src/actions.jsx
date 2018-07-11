@@ -4,6 +4,7 @@ export const CHANGE_VIEW = 'CHANGE_VIEW';
 export const RECEIVE_ROOM = 'RECEIVE_ROOM';
 export const RECEIVE_ERROR = 'RECEIVE_ERROR';
 export const UPDATE_PLAYERS = 'UPDATE_PLAYERS';
+export const RECEIVE_HOST_ROOM = 'RECEIVE_HOST_ROOM';
 
 export const createRoom = (hostName, roomKey) => {
   return dispatch => {
@@ -17,10 +18,11 @@ export const joinRoom = (playerName, roomKey) => {
   }
 }
 
-export const receiveRoom = (name, players) => ({
+export const receiveRoom = (name, players, isHost) => ({
   type: RECEIVE_ROOM,
   name,
   players,
+  isHost,
 });
 
 export const receiveError = (error) => ({

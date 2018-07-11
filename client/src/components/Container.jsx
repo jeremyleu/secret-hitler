@@ -14,19 +14,19 @@ class Container extends Component {
     super(props);
     const { dispatch } = this.props;
     socket.on('createSuccess', (result) => {
-      const { name, players } = result;
-      dispatch(receiveRoom(name, players));
+      const { name, players, isHost } = result;
+      dispatch(receiveRoom(name, players, isHost));
     });
     socket.on('joinSuccess', (result) => {
-      const { name, players } = result;
-      dispatch(receiveRoom(name, players));
+      const { name, players, isHost } = result;
+      dispatch(receiveRoom(name, players, isHost));
     });
     socket.on('joinError', (error) => {
       dispatch(receiveError(error));
     });
     socket.on('gameRetrieved', (game) => {
-      const { name, players } = game;
-      dispatch(receiveRoom(name, players));
+      const { name, players, isHost } = game;
+      dispatch(receiveRoom(name, players, isHost));
     });
   }
 

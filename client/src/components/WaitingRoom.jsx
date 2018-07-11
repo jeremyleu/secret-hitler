@@ -20,14 +20,8 @@ class WaitingRoom extends Component {
   }
 
   render() {
-    const { players, name } = this.props;
+    const { players, name, isHost } = this.props;
     console.log(players);
-    let button;
-    if(players.length >= 5 && name === players[0]){
-      button = <ShadowButton text="Start" onClick={this.handleStartClicked} />;
-    }else{
-      button = "";
-    }
     return (
       <div className="waiting-room">
         <ul className="player-list list-group">
@@ -41,7 +35,7 @@ class WaitingRoom extends Component {
             </li>
           ))}
         </ul>
-        {button}
+        {players.length >= 5 && isHost && <ShadowButton text="Start" onClick={this.handleStartClicked} />}
       </div>
     );
   }

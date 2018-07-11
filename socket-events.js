@@ -67,22 +67,23 @@ exports.initGame = (io, socket, app) => {
     } else {
       const id = generateUniqueId(allGames, GAME_ID_LENGTH);
       const newGame = new Game(id, hostName, roomKey);
+      const isHost = true;
       allGames[id] = newGame;
       currentGames[roomKey] = newGame;
       joinGame(newGame, hostName);
-      socket.emit(CREATE_SUCCESS, { name: hostName, players: newGame.getPlayers() });
+      socket.emit(CREATE_SUCCESS, { name: hostName, players: newGame.getPlayers(), isHost: isHost });
     }
   });
 
   socket.on('joinGame', (playerName, key) => {
     const roomKey = key.toUpperCase();
     const game = currentGames[roomKey];
-
+    const isHost = false;
     if (game) {
       const result = game.addPlayer(playerName);
       if (result.ok) {
         joinGame(game, playerName);
-        socket.emit(JOIN_SUCCESS, { name: playerName, players: game.getPlayers() });
+        socket.emit(JOIN_SUCCESS, { name: playerName, players: game.getPlayers(), isHost: isHost });
         socket.broadcast.to(roomKey).emit(PLAYER_JOIN_SUCCESS, game.getPlayers());
       } else {
         socket.emit(JOIN_ERROR, result.error);
