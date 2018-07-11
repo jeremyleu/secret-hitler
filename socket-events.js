@@ -46,7 +46,7 @@ exports.initGame = (io, socket, app) => {
     }
     return false;
   }
-
+  console.log("PLAYER NAME", session.playerName);
   attemptReconnect();
 
   function joinGame(game, name) {

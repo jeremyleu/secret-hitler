@@ -3,7 +3,8 @@ import { connect } from "react-redux";
 
 import "./WaitingRoom.scss";
 import socket from "../socket";
-import { updatePlayers } from "../actions";
+import { updatePlayers, changeView } from "../actions";
+import ShadowButton from './ShadowButton';
 
 class WaitingRoom extends Component {
   constructor(props) {
@@ -14,9 +15,19 @@ class WaitingRoom extends Component {
     });
   }
 
+  handleStartClicked = () => {
+    this.props.dispatch(changeView('landing'))
+  }
+
   render() {
     const { players, name } = this.props;
     console.log(players);
+    let button;
+    if(players.length >= 5 && name === players[0]){
+      button = <ShadowButton text="Start" onClick={this.handleStartClicked} />;
+    }else{
+      button = "";
+    }
     return (
       <div className="waiting-room">
         <ul className="player-list list-group">
@@ -30,6 +41,7 @@ class WaitingRoom extends Component {
             </li>
           ))}
         </ul>
+        {button}
       </div>
     );
   }
