@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import "./WaitingRoom.scss";
-import socket from "../socket";
-import { updatePlayers } from "../actions";
+import './WaitingRoom.scss';
+import socket from '../socket';
+import { updatePlayers } from '../actions';
 
 class WaitingRoom extends Component {
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
-    socket.on("playerJoinSuccess", players => {
+    socket.on('playerJoinSuccess', (players) => {
       dispatch(updatePlayers(players));
     });
   }
@@ -22,8 +22,7 @@ class WaitingRoom extends Component {
         <ul className="player-list list-group">
           {players.map(playerName => (
             <li
-              className={`player-list-item list-group-item ${name ===
-                playerName && "self"}`}
+              className={`player-list-item list-group-item ${name === playerName && 'self'}`}
               key={`${playerName}-list-item`}
             >
               {playerName}
