@@ -21,6 +21,7 @@ class WaitingRoom extends Component {
 
   render() {
     const { players, name, isHost } = this.props;
+    const playerMin = 5;
     console.log(players);
     return (
       <div className="waiting-room">
@@ -35,7 +36,7 @@ class WaitingRoom extends Component {
             </li>
           ))}
         </ul>
-        {players.length >= 5 && isHost && <ShadowButton text="Start" onClick={this.handleStartClicked} />}
+        {players.length >= playerMin && isHost && <ShadowButton text="Start" onClick={this.handleStartClicked} />}
       </div>
     );
   }
