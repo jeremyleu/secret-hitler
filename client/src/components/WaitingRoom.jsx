@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import './WaitingRoom.scss';
 import socket from '../socket';
@@ -7,6 +8,12 @@ import { updatePlayers, changeView } from '../actions';
 import ShadowButton from './ShadowButton';
 
 class WaitingRoom extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    players: PropTypes.array.isRequired,
+    name: PropTypes.string.isRequired,
+    isHost: PropTypes.bool.isRequired,
+  };
   constructor(props) {
     super(props);
     const { dispatch } = this.props;

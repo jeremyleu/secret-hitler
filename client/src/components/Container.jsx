@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import Landing from './Landing';
 import CreateGame from './CreateGame';
@@ -10,6 +11,16 @@ import socket from '../socket';
 import { receiveRoom, receiveError } from '../actions';
 
 class Container extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    view: PropTypes.string.isRequired,
+    error: PropTypes.string,
+  };
+
+  static defaultProps = {
+    error: null,
+  };
+
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
@@ -31,7 +42,7 @@ class Container extends Component {
   }
 
   chooseView = (view) => {
-    switch(view) {
+    switch (view) {
       case 'landing':
         return <Landing />;
       case 'create':
@@ -43,10 +54,10 @@ class Container extends Component {
       default:
         return null;
     }
-  }
+  };
 
   render() {
-    const {view, error} = this.props;
+    const { view, error } = this.props;
     return (
       <div className="container">
         <div className="title">Secret Hitler</div>
@@ -58,7 +69,7 @@ class Container extends Component {
 }
 
 function mapStateToProps(state) {
-  return {...state};
+  return { ...state };
 }
 
 export default connect(mapStateToProps)(Container);
