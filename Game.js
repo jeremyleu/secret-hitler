@@ -14,7 +14,7 @@ export default class Game {
   }
 
   addPlayer = (playerName) => {
-    if (this.players.find(player => player.getName() === playerName.toUpperCase())) {
+    if (this.players.find(player => player.getName().toUpperCase() === playerName.toUpperCase())) {
       return {
         ok: false,
         error: `Player with name ${playerName} already exists`,

@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 import { changeView, joinRoom } from '../actions';
 import ShadowButton from './ShadowButton';
 
 class JoinGame extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func.isRequired,
+  };
+
   state = {
     name: '',
     roomKey: '',
@@ -12,27 +17,27 @@ class JoinGame extends Component {
 
   handleJoinClicked = () => {
     this.props.dispatch(joinRoom(this.state.name, this.state.roomKey));
-  }
+  };
 
   handleCancelClicked = () => {
-    this.props.dispatch(changeView('landing'))
-  }
+    this.props.dispatch(changeView('landing'));
+  };
 
   handleNameChange = (event) => {
     this.setState({
       name: event.target.value,
     });
-  }
+  };
 
   handleKeyChange = (event) => {
     this.setState({
       roomKey: event.target.value,
     });
-  }
+  };
 
-  render(){
+  render() {
     return (
-      <div className ="join-game">
+      <div className="join-game">
         <input
           type="text"
           className="host-name-input form-control"
@@ -53,10 +58,10 @@ class JoinGame extends Component {
         <ShadowButton text="Join" onClick={this.handleJoinClicked} />
         <ShadowButton text="Cancel" onClick={this.handleCancelClicked} />
       </div>
-    )
+    );
   }
 }
-function mapStateToProps(state){
-  return {...state};
+function mapStateToProps(state) {
+  return { ...state };
 }
 export default connect(mapStateToProps)(JoinGame);

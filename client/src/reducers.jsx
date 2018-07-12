@@ -3,11 +3,11 @@ import {
   RECEIVE_ROOM,
   RECEIVE_ERROR,
   UPDATE_PLAYERS,
-  RECEIVE_HOST_ROOM
+  RECEIVE_HOST_ROOM,
 } from './actions';
 
 export function players(state = null, action) {
-  switch(action.type) {
+  switch (action.type) {
     case RECEIVE_ROOM:
       return action.players;
     case UPDATE_PLAYERS:
@@ -18,7 +18,7 @@ export function players(state = null, action) {
 }
 
 export function name(state = null, action) {
-  switch(action.type) {
+  switch (action.type) {
     case RECEIVE_ROOM:
       return action.name;
     default:
@@ -26,8 +26,8 @@ export function name(state = null, action) {
   }
 }
 
-export function isHost(state = null, action){
-  switch(action.type) {
+export function isHost(state = null, action) {
+  switch (action.type) {
     case RECEIVE_ROOM:
       return action.isHost;
     default:
@@ -36,7 +36,7 @@ export function isHost(state = null, action){
 }
 
 export function error(state = null, action) {
-  switch(action.type) {
+  switch (action.type) {
     case RECEIVE_ERROR:
       return action.error;
     case RECEIVE_ROOM:
@@ -49,7 +49,7 @@ export function error(state = null, action) {
 }
 
 export function view(state = 'landing', action) {
-  switch(action.type) {
+  switch (action.type) {
     case CHANGE_VIEW:
       return action.newView;
     case RECEIVE_ROOM:
