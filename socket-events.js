@@ -7,7 +7,8 @@ import {
   PLAYER_JOIN_SUCCESS,
   GAME_RETRIEVED,
   GAME_ID_LENGTH,
-  WAITING_ROOM,
+  ROLES_ASSIGNED,
+  CURRENT_PRESIDENT,
 } from './constants';
 import Game from './Game';
 
@@ -31,8 +32,15 @@ function generateUniqueId(allGames, length) {
 }
 
 exports.initGame = (io, socket, app) => {
-  const { locals: { currentGames, allGames } } = app;
-  const { handshake: { session, session: { gameId } } } = socket;
+  const {
+    locals: { currentGames, allGames },
+  } = app;
+  const {
+    handshake: {
+      session,
+      session: { gameId },
+    },
+  } = socket;
 
   function attemptReconnect() {
     if (allGames[gameId] && session.playerName) {
@@ -46,16 +54,19 @@ exports.initGame = (io, socket, app) => {
     }
     return false;
   }
-  console.log("PLAYER NAME", session.playerName);
+  console.log('PLAYER NAME', session.playerName);
   attemptReconnect();
 
   function joinGame(game, name) {
-    if (attemptReconnect()) { // attempt to reconnect if user is already in a game
+    if (attemptReconnect()) {
+      // attempt to reconnect if user is already in a game
       return;
     }
     session.gameId = game.id; // save game information in session
     session.playerName = name;
-    session.save((err) => { console.log(err || 'session saved'); });
+    session.save((err) => {
+      console.log(err || 'session saved');
+    });
     socket.join(game.key); // join socket room
   }
 
@@ -71,7 +82,12 @@ exports.initGame = (io, socket, app) => {
       allGames[id] = newGame;
       currentGames[roomKey] = newGame;
       joinGame(newGame, hostName);
-      socket.emit(CREATE_SUCCESS, { name: hostName, players: newGame.getPlayers(), isHost: isHost });
+      socket.emit(CREATE_SUCCESS, {
+        name: hostName,
+        players: newGame.getPlayers(),
+        isHost,
+        roomKey,
+      });
     }
   });
 
@@ -83,7 +99,12 @@ exports.initGame = (io, socket, app) => {
       const result = game.addPlayer(playerName);
       if (result.ok) {
         joinGame(game, playerName);
-        socket.emit(JOIN_SUCCESS, { name: playerName, players: game.getPlayers(), isHost: isHost });
+        socket.emit(JOIN_SUCCESS, {
+          name: playerName,
+          players: game.getPlayers(),
+          isHost,
+          roomKey,
+        });
         socket.broadcast.to(roomKey).emit(PLAYER_JOIN_SUCCESS, game.getPlayers());
       } else {
         socket.emit(JOIN_ERROR, result.error);
@@ -91,5 +112,13 @@ exports.initGame = (io, socket, app) => {
     } else {
       socket.emit(JOIN_ERROR, `Room (key '${roomKey}') does not exist.`);
     }
+  });
+
+  socket.on('assignRoles', (roomKey) => {
+    const game = currentGames[roomKey];
+    game.setup();
+    const { players, president } = game;
+    io.in(roomKey).emit(ROLES_ASSIGNED, players);
+    io.in(roomKey).emit(CURRENT_PRESIDENT, president);
   });
 };

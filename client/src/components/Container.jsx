@@ -8,36 +8,52 @@ import './Container.scss';
 import JoinGame from './JoinGame';
 import WaitingRoom from './WaitingRoom';
 import socket from '../socket';
-import { receiveRoom, receiveError } from '../actions';
+import { receiveRoom, receiveError, roleAssigned, currentPresident } from '../actions';
 
 class Container extends Component {
   static propTypes = {
     dispatch: PropTypes.func.isRequired,
     view: PropTypes.string.isRequired,
     error: PropTypes.string,
+    name: PropTypes.string,
   };
 
   static defaultProps = {
     error: null,
+    name: null,
   };
 
   constructor(props) {
     super(props);
     const { dispatch } = this.props;
     socket.on('createSuccess', (result) => {
-      const { name, players, isHost } = result;
-      dispatch(receiveRoom(name, players, isHost));
+      const {
+        name, players, isHost, roomKey,
+      } = result;
+      dispatch(receiveRoom(name, players, isHost, roomKey));
     });
     socket.on('joinSuccess', (result) => {
-      const { name, players, isHost } = result;
-      dispatch(receiveRoom(name, players, isHost));
+      const {
+        name, players, isHost, roomKey,
+      } = result;
+      dispatch(receiveRoom(name, players, isHost, roomKey));
     });
     socket.on('joinError', (error) => {
       dispatch(receiveError(error));
     });
     socket.on('gameRetrieved', (game) => {
-      const { name, players, isHost } = game;
-      dispatch(receiveRoom(name, players, isHost));
+      const {
+        name, players, isHost, roomKey,
+      } = game;
+      dispatch(receiveRoom(name, players, isHost, roomKey));
+    });
+    socket.on('rolesAssigned', (players) => {
+      const player = players.find(playerRole => playerRole.name === this.props.name);
+      const { role } = player;
+      dispatch(roleAssigned(role, players));
+    });
+    socket.on('current_president', (president) => {
+      dispatch(currentPresident(president));
     });
   }
 
