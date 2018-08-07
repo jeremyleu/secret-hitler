@@ -8,7 +8,15 @@ import './Container.scss';
 import JoinGame from './JoinGame';
 import WaitingRoom from './WaitingRoom';
 import socket from '../socket';
-import { receiveRoom, receiveError, roleAssigned, currentPresident } from '../actions';
+import {
+  receiveRoom,
+  receiveError,
+  roleAssigned,
+  currentPresident,
+  currentChancellor,
+  currentVotes,
+  choosePolicy,
+} from '../actions';
 
 class Container extends Component {
   static propTypes = {
@@ -28,32 +36,55 @@ class Container extends Component {
     const { dispatch } = this.props;
     socket.on('createSuccess', (result) => {
       const {
-        name, players, isHost, roomKey,
+        name, players, isHost, roomKey, status,
       } = result;
-      dispatch(receiveRoom(name, players, isHost, roomKey));
+      dispatch(receiveRoom(name, players, isHost, roomKey, status));
     });
     socket.on('joinSuccess', (result) => {
       const {
-        name, players, isHost, roomKey,
+        name, players, isHost, roomKey, status,
       } = result;
-      dispatch(receiveRoom(name, players, isHost, roomKey));
+      dispatch(receiveRoom(name, players, isHost, roomKey, status));
     });
     socket.on('joinError', (error) => {
       dispatch(receiveError(error));
     });
     socket.on('gameRetrieved', (game) => {
       const {
-        name, players, isHost, roomKey,
+        name, players, isHost, roomKey, status,
       } = game;
-      dispatch(receiveRoom(name, players, isHost, roomKey));
+      dispatch(receiveRoom(name, players, isHost, roomKey, status));
     });
     socket.on('rolesAssigned', (players) => {
       const player = players.find(playerRole => playerRole.name === this.props.name);
       const { role } = player;
       dispatch(roleAssigned(role, players));
     });
-    socket.on('current_president', (president) => {
-      dispatch(currentPresident(president));
+    socket.on('current_president', (selectPresident) => {
+      const { president, status } = selectPresident;
+      dispatch(currentPresident(president, status));
+    });
+    socket.on('elect_chancellor', (electChancellor) => {
+      const { chancellor, status, turn } = electChancellor;
+      dispatch(currentChancellor(chancellor, status, turn));
+    });
+    socket.on('voteRecord', (proposal) => {
+      const { currentProposal, players, status } = proposal;
+      const currentVote = currentProposal.votes;
+      if (currentVote.length === players.length) {
+        const approves = currentVote.filter(vote => vote.voteChoice === true);
+        const declines = currentVote.filter(vote => vote.voteChoice === false);
+        const voteResult = approves.length > declines.length;
+        dispatch(currentVotes(voteResult, status));
+      }
+    });
+    socket.on('presidentDiscard', (policies) => {
+      const { draw, status } = policies;
+      dispatch(choosePolicy(draw, status));
+    });
+    socket.on('chancellorDiscard', (policies) => {
+      const { draw, status } = policies;
+      dispatch(choosePolicy(draw, status));
     });
   }
 

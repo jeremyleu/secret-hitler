@@ -1,6 +1,7 @@
-import { WAITING_ROOM, MAX_PLAYERS, ROLES } from './constants';
+import { WAITING_ROOM, MAX_PLAYERS, ROLES, DECK } from './constants';
 import Player from './Player';
 import { shuffle, assign } from './utils';
+import Proposal from './Proposal';
 
 export default class Game {
   constructor(id, hostName, roomKey) {
@@ -10,6 +11,11 @@ export default class Game {
     this.state = WAITING_ROOM;
     this.players = [this.host];
     this.president = null;
+    this.proposals = [];
+    this.turnNum = 0;
+    this.deck = DECK;
+    this.draw = [];
+    this.discard = [];
   }
 
   addPlayer = (playerName) => {
@@ -37,6 +43,28 @@ export default class Game {
 
     assign(this.players, roles);
     const player = this.players[Math.floor(Math.random() * this.players.length)];
-    this.president = player;
+    this.president = player.name;
+  };
+
+  voting = (turn, president, chancellor) => {
+    if (turn !== this.turnNum) {
+      this.proposals.push(new Proposal(president, chancellor));
+      this.turnNum++;
+    }
+  };
+
+  policies = () => {
+    if (this.discard.length === 0) {
+      shuffle(this.deck);
+    }
+    let i = 0;
+    while (i < 3) {
+      this.draw[i] = this.deck.pop();
+      i++;
+    }
+  };
+
+  discardOneCard = () => {
+    this.discard.push(this.draw.pop());
   };
 }

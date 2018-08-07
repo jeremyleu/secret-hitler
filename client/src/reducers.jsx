@@ -5,6 +5,9 @@ import {
   UPDATE_PLAYERS,
   ROLE_ASSIGNED,
   CURRENT_PRESIDENT,
+  CURRENT_CHANCELLOR,
+  CURRENT_VOTES,
+  CHOOSE_POLICY,
 } from './actions';
 
 export function players(state = null, action) {
@@ -24,6 +27,23 @@ export function name(state = null, action) {
   switch (action.type) {
     case RECEIVE_ROOM:
       return action.name;
+    default:
+      return state;
+  }
+}
+
+export function status(state = null, action) {
+  switch (action.type) {
+    case RECEIVE_ROOM:
+      return action.status;
+    case CURRENT_PRESIDENT:
+      return action.status;
+    case CURRENT_CHANCELLOR:
+      return action.status;
+    case CURRENT_VOTES:
+      return action.status;
+    case CHOOSE_POLICY:
+      return action.status;
     default:
       return state;
   }
@@ -84,6 +104,42 @@ export function president(state = null, action) {
   switch (action.type) {
     case CURRENT_PRESIDENT:
       return action.president;
+    default:
+      return state;
+  }
+}
+
+export function chancellor(state = null, action) {
+  switch (action.type) {
+    case CURRENT_CHANCELLOR:
+      return action.chancellor;
+    default:
+      return state;
+  }
+}
+
+export function turn(state = null, action) {
+  switch (action.type) {
+    case CURRENT_CHANCELLOR:
+      return action.turn;
+    default:
+      return state;
+  }
+}
+
+export function voteResult(state = null, action) {
+  switch (action.type) {
+    case CURRENT_VOTES:
+      return action.voteResult;
+    default:
+      return state;
+  }
+}
+
+export function policies(state = null, action) {
+  switch (action.type) {
+    case CHOOSE_POLICY:
+      return action.draw;
     default:
       return state;
   }

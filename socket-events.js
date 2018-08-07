@@ -9,6 +9,13 @@ import {
   GAME_ID_LENGTH,
   ROLES_ASSIGNED,
   CURRENT_PRESIDENT,
+  WAITING_ROOM,
+  PRESIDENT_NOMINATE,
+  ELECT_CHANCELLOR,
+  VOTE_NOMINATION,
+  VOTE_RECORD,
+  PRESIDENT_DISCARD,
+  CHANCELLOR_DISCARD,
 } from './constants';
 import Game from './Game';
 
@@ -72,7 +79,7 @@ exports.initGame = (io, socket, app) => {
 
   socket.on('createGame', (hostName, key) => {
     const roomKey = key.toUpperCase();
-
+    const status = WAITING_ROOM;
     if (currentGames[roomKey]) {
       socket.emit(JOIN_ERROR, `Room (key '${roomKey}') already exists.`);
     } else {
@@ -87,6 +94,7 @@ exports.initGame = (io, socket, app) => {
         players: newGame.getPlayers(),
         isHost,
         roomKey,
+        status,
       });
     }
   });
@@ -95,6 +103,7 @@ exports.initGame = (io, socket, app) => {
     const roomKey = key.toUpperCase();
     const game = currentGames[roomKey];
     const isHost = false;
+    const status = WAITING_ROOM;
     if (game) {
       const result = game.addPlayer(playerName);
       if (result.ok) {
@@ -104,6 +113,7 @@ exports.initGame = (io, socket, app) => {
           players: game.getPlayers(),
           isHost,
           roomKey,
+          status,
         });
         socket.broadcast.to(roomKey).emit(PLAYER_JOIN_SUCCESS, game.getPlayers());
       } else {
@@ -116,9 +126,50 @@ exports.initGame = (io, socket, app) => {
 
   socket.on('assignRoles', (roomKey) => {
     const game = currentGames[roomKey];
+    const status = PRESIDENT_NOMINATE;
     game.setup();
     const { players, president } = game;
     io.in(roomKey).emit(ROLES_ASSIGNED, players);
-    io.in(roomKey).emit(CURRENT_PRESIDENT, president);
+    io.in(roomKey).emit(CURRENT_PRESIDENT, { president, status });
+  });
+
+  socket.on('electChancellor', (chancellor, roomKey, turn) => {
+    const status = VOTE_NOMINATION;
+    io.in(roomKey).emit(ELECT_CHANCELLOR, { chancellor, status, turn });
+  });
+
+  socket.on('votes', (vote, roomKey, president, chancellor, turn, players) => {
+    const game = currentGames[roomKey];
+    const status = 'voteRecord';
+
+    game.voting(turn, president, chancellor);
+
+    const { proposals } = game;
+    const currentProposal = proposals[proposals.length - 1];
+
+    currentProposal.receiveVotes(vote);
+    io.in(roomKey).emit(VOTE_RECORD, { currentProposal, players, status });
+  });
+
+  socket.on('presidentPolicy', (roomKey) => {
+    const game = currentGames[roomKey];
+    const status = 'presidentDiscard';
+
+    game.policies();
+
+    const { draw } = game;
+
+    io.in(roomKey).emit(PRESIDENT_DISCARD, { draw, status });
+  });
+
+  socket.on('chancellorPolicy', (roomKey) => {
+    const game = currentGames[roomKey];
+    const status = 'chancellorDiscard';
+
+    game.discardOneCard();
+
+    const { draw } = game;
+
+    io.in(roomKey).emit(CHANCELLOR_DISCARD, { draw, status });
   });
 };

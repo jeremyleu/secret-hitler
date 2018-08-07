@@ -19,3 +19,28 @@ export const ROLES = {
   10: [HITLER, FASCIST, FASCIST, FASCIST, LIBERAL, LIBERAL, LIBERAL, LIBERAL, LIBERAL, LIBERAL],
 };
 export const CURRENT_PRESIDENT = 'current_president';
+export const PRESIDENT_NOMINATE = 'presidentNominate';
+export const ELECT_CHANCELLOR = 'elect_chancellor';
+export const VOTE_NOMINATION = 'vote_nomination';
+export const VOTE_RECORD = 'voteRecord';
+export const DECK = [
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+  LIBERAL,
+];
+export const PRESIDENT_DISCARD = 'presidentDiscard';
+export const CHANCELLOR_DISCARD = 'chancellorDiscard';

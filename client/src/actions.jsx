@@ -8,17 +8,21 @@ export const RECEIVE_HOST_ROOM = 'RECEIVE_HOST_ROOM';
 export const ASSIGN_ROLES = 'ASSIGN_ROLES';
 export const ROLE_ASSIGNED = 'ROLE_ASSIGNED';
 export const CURRENT_PRESIDENT = 'CURRENT_PRESIDENT';
+export const CURRENT_CHANCELLOR = 'CURRENT_CHANCELLOR';
+export const CURRENT_VOTES = 'CURRENT_VOTES';
+export const CHOOSE_POLICY = 'CHOOSE_POLICY';
 
 export const createRoom = (hostName, roomKey) => () => socket.emit('createGame', hostName, roomKey);
 
 export const joinRoom = (playerName, roomKey) => () => socket.emit('joinGame', playerName, roomKey);
 
-export const receiveRoom = (name, players, isHost, roomKey) => ({
+export const receiveRoom = (name, players, isHost, roomKey, status) => ({
   type: RECEIVE_ROOM,
   name,
   players,
   isHost,
   roomKey,
+  status,
 });
 
 export const receiveError = error => ({
@@ -44,7 +48,37 @@ export const roleAssigned = (role, players) => ({
   players,
 });
 
-export const currentPresident = president => ({
+export const currentPresident = (president, status) => ({
   type: CURRENT_PRESIDENT,
   president,
+  status,
 });
+
+export const electChancellor = (chancellor, roomKey, turn) => () =>
+  socket.emit('electChancellor', chancellor, roomKey, turn);
+
+export const currentChancellor = (chancellor, status, turn) => ({
+  type: CURRENT_CHANCELLOR,
+  chancellor,
+  status,
+  turn,
+});
+
+export const votes = (vote, roomKey, president, chancellor, turn, players) => () =>
+  socket.emit('votes', vote, roomKey, president, chancellor, turn, players);
+
+export const currentVotes = (voteResult, status) => ({
+  type: CURRENT_VOTES,
+  voteResult,
+  status,
+});
+
+export const presidentPolicy = roomKey => () => socket.emit('presidentPolicy', roomKey);
+
+export const choosePolicy = (draw, status) => ({
+  type: CHOOSE_POLICY,
+  draw,
+  status,
+});
+
+export const chancellorPolicy = roomKey => () => socket.emit('chancellorPolicy', roomKey);
