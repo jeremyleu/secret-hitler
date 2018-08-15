@@ -8,6 +8,10 @@ import {
   CURRENT_CHANCELLOR,
   CURRENT_VOTES,
   CHOOSE_POLICY,
+  UPDATE_SCORE,
+  HAS_VOTED,
+  PREVIOUS_PRESIDENT,
+  PREVIOUS_CHANCELLOR,
 } from './actions';
 
 export function players(state = null, action) {
@@ -35,14 +39,11 @@ export function name(state = null, action) {
 export function status(state = null, action) {
   switch (action.type) {
     case RECEIVE_ROOM:
-      return action.status;
     case CURRENT_PRESIDENT:
-      return action.status;
     case CURRENT_CHANCELLOR:
-      return action.status;
     case CURRENT_VOTES:
-      return action.status;
     case CHOOSE_POLICY:
+    case UPDATE_SCORE:
       return action.status;
     default:
       return state;
@@ -109,6 +110,15 @@ export function president(state = null, action) {
   }
 }
 
+export function previousPresident(state = null, action) {
+  switch (action.type) {
+    case PREVIOUS_PRESIDENT:
+      return action.president;
+    default:
+      return state;
+  }
+}
+
 export function chancellor(state = null, action) {
   switch (action.type) {
     case CURRENT_CHANCELLOR:
@@ -118,7 +128,16 @@ export function chancellor(state = null, action) {
   }
 }
 
-export function turn(state = null, action) {
+export function previousChancellor(state = null, action) {
+  switch (action.type) {
+    case PREVIOUS_CHANCELLOR:
+      return action.chancellor;
+    default:
+      return state;
+  }
+}
+
+export function turn(state = 0, action) {
   switch (action.type) {
     case CURRENT_CHANCELLOR:
       return action.turn;
@@ -140,6 +159,35 @@ export function policies(state = null, action) {
   switch (action.type) {
     case CHOOSE_POLICY:
       return action.draw;
+    default:
+      return state;
+  }
+}
+
+export function liberalScore(state = null, action) {
+  switch (action.type) {
+    case UPDATE_SCORE:
+      return action.liberalScore;
+    default:
+      return state;
+  }
+}
+
+export function fascistScore(state = null, action) {
+  switch (action.type) {
+    case UPDATE_SCORE:
+      return action.fascistScore;
+    default:
+      return state;
+  }
+}
+
+export function hasVoted(state = false, action) {
+  switch (action.type) {
+    case HAS_VOTED:
+      return true;
+    case CURRENT_CHANCELLOR:
+      return false;
     default:
       return state;
   }

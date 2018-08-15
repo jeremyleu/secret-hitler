@@ -16,6 +16,9 @@ import {
   currentChancellor,
   currentVotes,
   choosePolicy,
+  updateScore,
+  prevPresident,
+  prevChancellor,
 } from '../actions';
 
 class Container extends Component {
@@ -64,6 +67,11 @@ class Container extends Component {
       const { president, status } = selectPresident;
       dispatch(currentPresident(president, status));
     });
+    socket.on('score', (scores) => {
+      const { liberalScore, fascistScore } = scores;
+      const status = '';
+      dispatch(updateScore(liberalScore, fascistScore, status));
+    });
     socket.on('elect_chancellor', (electChancellor) => {
       const { chancellor, status, turn } = electChancellor;
       dispatch(currentChancellor(chancellor, status, turn));
@@ -79,12 +87,22 @@ class Container extends Component {
       }
     });
     socket.on('presidentDiscard', (policies) => {
-      const { draw, status } = policies;
+      const { draw, status, president } = policies;
+      dispatch(prevPresident(president));
       dispatch(choosePolicy(draw, status));
     });
     socket.on('chancellorDiscard', (policies) => {
-      const { draw, status } = policies;
+      const { draw, status, chancellor } = policies;
+      dispatch(prevChancellor(chancellor));
       dispatch(choosePolicy(draw, status));
+    });
+    socket.on('playPolicy', (scores) => {
+      const { liberalScore, fascistScore, status } = scores;
+      dispatch(updateScore(liberalScore, fascistScore, status));
+    });
+    socket.on('nextPresident', (presidentName) => {
+      const { president, status } = presidentName;
+      dispatch(currentPresident(president, status));
     });
   }
 

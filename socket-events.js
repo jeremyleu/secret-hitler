@@ -16,6 +16,9 @@ import {
   VOTE_RECORD,
   PRESIDENT_DISCARD,
   CHANCELLOR_DISCARD,
+  PLAY_POLICY,
+  SCORE,
+  NEXT_PRESIDENT,
 } from './constants';
 import Game from './Game';
 
@@ -128,12 +131,15 @@ exports.initGame = (io, socket, app) => {
     const game = currentGames[roomKey];
     const status = PRESIDENT_NOMINATE;
     game.setup();
-    const { players, president } = game;
+    const {
+      players, president, liberalScore, fascistScore,
+    } = game;
+    io.in(roomKey).emit(SCORE, { liberalScore, fascistScore });
     io.in(roomKey).emit(ROLES_ASSIGNED, players);
     io.in(roomKey).emit(CURRENT_PRESIDENT, { president, status });
   });
 
-  socket.on('electChancellor', (chancellor, roomKey, turn) => {
+  socket.on('electChancellor', (chancellor, roomKey, turn, president) => {
     const status = VOTE_NOMINATION;
     io.in(roomKey).emit(ELECT_CHANCELLOR, { chancellor, status, turn });
   });
@@ -151,7 +157,7 @@ exports.initGame = (io, socket, app) => {
     io.in(roomKey).emit(VOTE_RECORD, { currentProposal, players, status });
   });
 
-  socket.on('presidentPolicy', (roomKey) => {
+  socket.on('presidentPolicy', (roomKey, president) => {
     const game = currentGames[roomKey];
     const status = 'presidentDiscard';
 
@@ -159,17 +165,38 @@ exports.initGame = (io, socket, app) => {
 
     const { draw } = game;
 
-    io.in(roomKey).emit(PRESIDENT_DISCARD, { draw, status });
+    io.in(roomKey).emit(PRESIDENT_DISCARD, { draw, status, president });
   });
 
-  socket.on('chancellorPolicy', (roomKey) => {
+  socket.on('chancellorPolicy', (roomKey, policyIdx, chancellor) => {
     const game = currentGames[roomKey];
     const status = 'chancellorDiscard';
 
-    game.discardOneCard();
+    game.discardPolicy(policyIdx);
 
     const { draw } = game;
 
-    io.in(roomKey).emit(CHANCELLOR_DISCARD, { draw, status });
+    io.in(roomKey).emit(CHANCELLOR_DISCARD, { draw, status, chancellor });
+  });
+  socket.on('playPolicy', (roomKey, policyIdx) => {
+    const game = currentGames[roomKey];
+    const status = 'playDiscard';
+
+    game.discardPolicy(policyIdx);
+    game.playPolicy();
+
+    const { liberalScore, fascistScore } = game;
+
+    io.in(roomKey).emit(PLAY_POLICY, { liberalScore, fascistScore, status });
+  });
+  socket.on('nextPresident', (roomKey, index) => {
+    const game = currentGames[roomKey];
+    const status = 'presidentNominate';
+
+    game.presidentNext(index);
+
+    const { president } = game;
+
+    io.in(roomKey).emit(NEXT_PRESIDENT, { president, status });
   });
 };

@@ -11,6 +11,10 @@ export const CURRENT_PRESIDENT = 'CURRENT_PRESIDENT';
 export const CURRENT_CHANCELLOR = 'CURRENT_CHANCELLOR';
 export const CURRENT_VOTES = 'CURRENT_VOTES';
 export const CHOOSE_POLICY = 'CHOOSE_POLICY';
+export const UPDATE_SCORE = 'UPDATE_SCORE';
+export const HAS_VOTED = 'HAS_VOTED';
+export const PREVIOUS_PRESIDENT = 'PREVIOUS_PRESIDENT';
+export const PREVIOUS_CHANCELLOR = 'PREVIOUS_CHANCELLOR';
 
 export const createRoom = (hostName, roomKey) => () => socket.emit('createGame', hostName, roomKey);
 
@@ -73,7 +77,8 @@ export const currentVotes = (voteResult, status) => ({
   status,
 });
 
-export const presidentPolicy = roomKey => () => socket.emit('presidentPolicy', roomKey);
+export const presidentPolicy = (roomKey, president) => () =>
+  socket.emit('presidentPolicy', roomKey, president);
 
 export const choosePolicy = (draw, status) => ({
   type: CHOOSE_POLICY,
@@ -81,4 +86,31 @@ export const choosePolicy = (draw, status) => ({
   status,
 });
 
-export const chancellorPolicy = roomKey => () => socket.emit('chancellorPolicy', roomKey);
+export const chancellorPolicy = (roomKey, policyIdx, chancellor) => () =>
+  socket.emit('chancellorPolicy', roomKey, policyIdx, chancellor);
+
+export const playPolicy = (roomKey, policyIdx) => () =>
+  socket.emit('playPolicy', roomKey, policyIdx);
+
+export const updateScore = (liberalScore, fascistScore, status) => ({
+  type: UPDATE_SCORE,
+  liberalScore,
+  fascistScore,
+  status,
+});
+
+export const nextPresident = (roomKey, index) => () => socket.emit('nextPresident', roomKey, index);
+
+export const voteStatus = () => ({
+  type: HAS_VOTED,
+});
+
+export const prevPresident = president => ({
+  type: PREVIOUS_PRESIDENT,
+  president,
+});
+
+export const prevChancellor = chancellor => ({
+  type: PREVIOUS_CHANCELLOR,
+  chancellor,
+});

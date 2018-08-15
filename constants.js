@@ -30,11 +30,11 @@ export const DECK = [
   FASCIST,
   FASCIST,
   FASCIST,
-  LIBERAL,
-  LIBERAL,
-  LIBERAL,
-  LIBERAL,
-  LIBERAL,
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  FASCIST,
+  FASCIST,
   LIBERAL,
   LIBERAL,
   LIBERAL,
@@ -44,3 +44,6 @@ export const DECK = [
 ];
 export const PRESIDENT_DISCARD = 'presidentDiscard';
 export const CHANCELLOR_DISCARD = 'chancellorDiscard';
+export const PLAY_POLICY = 'playPolicy';
+export const SCORE = 'score';
+export const NEXT_PRESIDENT = 'nextPresident';

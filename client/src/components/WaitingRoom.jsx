@@ -11,6 +11,9 @@ import {
   votes,
   presidentPolicy,
   chancellorPolicy,
+  playPolicy,
+  nextPresident,
+  voteStatus,
 } from '../actions';
 import ShadowButton from './ShadowButton';
 
@@ -28,6 +31,11 @@ class WaitingRoom extends Component {
     voteResult: PropTypes.bool,
     turn: PropTypes.number,
     policies: PropTypes.array,
+    liberalScore: PropTypes.number,
+    fascistScore: PropTypes.number,
+    hasVoted: PropTypes.bool,
+    previousPresident: PropTypes.string,
+    previousChancellor: PropTypes.string,
   };
   static defaultProps = {
     role: null,
@@ -35,12 +43,17 @@ class WaitingRoom extends Component {
     status: null,
     chancellor: null,
     voteResult: null,
-    turn: null,
+    turn: 0,
     policies: null,
+    liberalScore: 0,
+    fascistScore: 0,
+    hasVoted: false,
+    previousPresident: null,
+    previousChancellor: null,
   };
   constructor(props) {
     super(props);
-    this.state = { selectedPlayer: null, turn: 0 };
+    this.state = { selectedPlayer: null };
     const { dispatch } = this.props;
     socket.on('playerJoinSuccess', (players) => {
       dispatch(updatePlayers(players));
@@ -53,17 +66,11 @@ class WaitingRoom extends Component {
   };
 
   handleSubmitClicked = () => {
-    const { roomKey } = this.props;
-    this.setState(
-      prevState => ({
-        turn: prevState.turn + 1,
-      }),
-      () => {
-        this.props.dispatch(electChancellor(this.state.selectedPlayer, roomKey, this.state.turn));
-      },
-    );
-  };
+    const { roomKey, turn } = this.props;
+    const turnState = turn + 1;
 
+    this.props.dispatch(electChancellor(this.state.selectedPlayer, roomKey, turnState));
+  };
   handleChange = (playerName, checked) => {
     if (checked) {
       this.setState({ selectedPlayer: playerName });
@@ -76,6 +83,7 @@ class WaitingRoom extends Component {
     } = this.props;
     const vote = { voteChoice: true, playerName: name };
     this.props.dispatch(votes(vote, roomKey, president, chancellor, turn, players));
+    this.props.dispatch(voteStatus());
   };
 
   handleDeclineClicked = () => {
@@ -84,11 +92,21 @@ class WaitingRoom extends Component {
     } = this.props;
     const vote = { voteChoice: false, playerName: name };
     this.props.dispatch(votes(vote, roomKey, president, chancellor, turn, players));
+    this.props.dispatch(voteStatus());
   };
 
-  handlePolicyClicked = () => {
-    const { roomKey } = this.props;
-    this.props.dispatch(chancellorPolicy(roomKey));
+  handlePolicyClicked = (policyIdx) => {
+    const {
+      roomKey, status, players, president, chancellor,
+    } = this.props;
+    if (status === 'presidentDiscard') {
+      this.props.dispatch(chancellorPolicy(roomKey, policyIdx, chancellor));
+    } else if (status === 'chancellorDiscard') {
+      this.props.dispatch(playPolicy(roomKey, policyIdx));
+      const presidentIndex = players.find(player => player.name === president);
+      const index = players.indexOf(presidentIndex);
+      this.props.dispatch(nextPresident(roomKey, index));
+    }
   };
   render() {
     const {
@@ -102,6 +120,11 @@ class WaitingRoom extends Component {
       voteResult,
       roomKey,
       policies,
+      liberalScore,
+      fascistScore,
+      hasVoted,
+      previousPresident,
+      previousChancellor,
     } = this.props;
     const playerMin = 5;
     console.log(players);
@@ -111,13 +134,27 @@ class WaitingRoom extends Component {
     const hitler = players.find(player => player.role === 'hitler');
     const isPresident = president && president === name;
     const checkStatus = status === 'presidentNominate';
+    const checkChancellorStatus = status === 'presidentNominate' || status === 'waitingRoom' || status === 'vote_nomination';
     if (voteResult && status === 'voteRecord' && president === name) {
-      this.props.dispatch(presidentPolicy(roomKey));
+      this.props.dispatch(presidentPolicy(roomKey, president));
+    }
+
+    if (voteResult === false && status === 'voteRecord') {
+      const presidentIndex = players.find(player => player.name === president);
+      const index = players.indexOf(presidentIndex);
+      console.log(index);
+      this.props.dispatch(nextPresident(roomKey, index));
     }
 
     return (
       <div className="waiting-room">
         {role && <div className="role"> Your role is {role} </div>}
+        {role && (
+          <div>
+            {' '}
+            Liberals: {liberalScore} Fascists: {fascistScore}{' '}
+          </div>
+        )}
         {role === 'fascist' &&
           fascistPlayers.length > 0 && (
             <div> Other fascist players: {fascistNames.join(', ')} </div>
@@ -126,7 +163,9 @@ class WaitingRoom extends Component {
         {president && <div> Current President: {president} </div>}
         {status === 'presidentNominate' && isPresident && <div> Please select the Chancellor </div>}
         {status === 'vote_nomination' && <div> Proposed Chancellor: {chancellor} </div>}
-        {chancellor && voteResult && <div> Current Chancellor: {chancellor} </div>}
+        {chancellor &&
+          voteResult &&
+          !checkChancellorStatus && <div> Current Chancellor: {chancellor} </div>}
         <ul className="player-list list-group">
           {players.map(player => (
             <li
@@ -136,7 +175,8 @@ class WaitingRoom extends Component {
               {checkStatus &&
                 isPresident && (
                   <input
-                    disabled={president === player.name}
+                    disabled={president === player.name || previousChancellor === player.name
+                    || previousPresident === player.name}
                     type="radio"
                     checked={this.state.selectedPlayer === player.name}
                     onChange={(e) => {
@@ -155,10 +195,10 @@ class WaitingRoom extends Component {
           )}
         {status === 'presidentNominate' &&
           president === name && <ShadowButton text="Submit" onClick={this.handleSubmitClicked} />}
-        {status === 'vote_nomination' && (
+        {status === 'vote_nomination' && !hasVoted && (
           <ShadowButton text="Ja" onClick={this.handleApproveClicked} />
         )}
-        {status === 'vote_nomination' && (
+        {status === 'vote_nomination' && !hasVoted && (
           <ShadowButton text="Nein" onClick={this.handleDeclineClicked} />
         )}
         {status === 'presidentDiscard' &&
@@ -166,29 +206,24 @@ class WaitingRoom extends Component {
         {status === 'chancellorDiscard' &&
           name === chancellor && <div> Please choose one policy to discard </div>}
         {status === 'presidentDiscard' &&
-          name === president &&
-          policies.length === 3 && (
-            <ShadowButton text={policies[0]} onClick={this.handlePolicyClicked} />
+          name === president && (
+            <ShadowButton text={policies[0]} onClick={() => this.handlePolicyClicked(0)} />
           )}
         {status === 'presidentDiscard' &&
-          name === president &&
-          policies.length === 3 && (
-            <ShadowButton text={policies[1]} onClick={this.handlePolicyClicked} />
+          name === president && (
+            <ShadowButton text={policies[1]} onClick={() => this.handlePolicyClicked(1)} />
           )}
         {status === 'presidentDiscard' &&
-          name === president &&
-          policies.length === 3 && (
-            <ShadowButton text={policies[2]} onClick={this.handlePolicyClicked} />
+          name === president && (
+            <ShadowButton text={policies[2]} onClick={() => this.handlePolicyClicked(2)} />
           )}
         {status === 'chancellorDiscard' &&
-          name === chancellor &&
-          policies.length === 2 && (
-            <ShadowButton text={policies[0]} onClick={this.handlePolicyClicked} />
+          name === chancellor && (
+            <ShadowButton text={policies[0]} onClick={() => this.handlePolicyClicked(0)} />
           )}
         {status === 'chancellorDiscard' &&
-          name === chancellor &&
-          policies.length === 2 && (
-            <ShadowButton text={policies[1]} onClick={this.handlePolicyClicked} />
+          name === chancellor && (
+            <ShadowButton text={policies[1]} onClick={() => this.handlePolicyClicked(1)} />
           )}
       </div>
     );

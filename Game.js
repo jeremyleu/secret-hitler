@@ -16,6 +16,8 @@ export default class Game {
     this.deck = DECK;
     this.draw = [];
     this.discard = [];
+    this.liberalScore = 0;
+    this.fascistScore = 0;
   }
 
   addPlayer = (playerName) => {
@@ -64,7 +66,25 @@ export default class Game {
     }
   };
 
-  discardOneCard = () => {
-    this.discard.push(this.draw.pop());
+  discardPolicy = (policyIdx) => {
+    this.discard.push(this.draw[policyIdx]);
+    this.draw.splice(policyIdx, 1);
+  };
+
+  playPolicy = (policyIdx) => {
+    if (this.draw[0] === 'fascist') {
+      this.fascistScore++;
+    } else if (this.draw[0] === 'liberal') {
+      this.liberalScore++;
+    }
+  };
+
+  presidentNext = (index) => {
+    let nextIndex = index + 1;
+    if (nextIndex < this.players.length) {
+      this.president = this.players[nextIndex].name;
+    } else {
+      this.president = this.players[0].name;
+    }
   };
 }
