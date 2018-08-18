@@ -56,11 +56,19 @@ export default class Game {
   };
 
   policies = () => {
-    if (this.discard.length === 0) {
+    console.log(this.deck.length);
+    if (this.turnNum === 1) {
       shuffle(this.deck);
     }
     let i = 0;
     while (i < 3) {
+      if (this.deck.length === 1) {
+        shuffle(this.discard);
+        this.discard.unshift(this.deck.pop());
+        this.deck = this.discard;
+        this.discard = [];
+        console.log('deck reshuffled');
+      }
       this.draw[i] = this.deck.pop();
       i++;
     }
@@ -71,7 +79,7 @@ export default class Game {
     this.draw.splice(policyIdx, 1);
   };
 
-  playPolicy = (policyIdx) => {
+  playPolicy = () => {
     if (this.draw[0] === 'fascist') {
       this.fascistScore++;
     } else if (this.draw[0] === 'liberal') {
@@ -80,7 +88,7 @@ export default class Game {
   };
 
   presidentNext = (index) => {
-    let nextIndex = index + 1;
+    const nextIndex = index + 1;
     if (nextIndex < this.players.length) {
       this.president = this.players[nextIndex].name;
     } else {

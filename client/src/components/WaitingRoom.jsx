@@ -134,8 +134,10 @@ class WaitingRoom extends Component {
     const hitler = players.find(player => player.role === 'hitler');
     const isPresident = president && president === name;
     const checkStatus = status === 'presidentNominate';
-    const checkChancellorStatus = status === 'presidentNominate' || status === 'waitingRoom' || status === 'vote_nomination';
+    const checkChancellorStatus =
+      status === 'presidentNominate' || status === 'waitingRoom' || status === 'vote_nomination';
     if (voteResult && status === 'voteRecord' && president === name) {
+      console.log('policy');
       this.props.dispatch(presidentPolicy(roomKey, president));
     }
 
@@ -175,8 +177,11 @@ class WaitingRoom extends Component {
               {checkStatus &&
                 isPresident && (
                   <input
-                    disabled={president === player.name || previousChancellor === player.name
-                    || previousPresident === player.name}
+                    disabled={
+                      president === player.name ||
+                      previousChancellor === player.name ||
+                      previousPresident === player.name
+                    }
                     type="radio"
                     checked={this.state.selectedPlayer === player.name}
                     onChange={(e) => {
@@ -195,12 +200,10 @@ class WaitingRoom extends Component {
           )}
         {status === 'presidentNominate' &&
           president === name && <ShadowButton text="Submit" onClick={this.handleSubmitClicked} />}
-        {status === 'vote_nomination' && !hasVoted && (
-          <ShadowButton text="Ja" onClick={this.handleApproveClicked} />
-        )}
-        {status === 'vote_nomination' && !hasVoted && (
-          <ShadowButton text="Nein" onClick={this.handleDeclineClicked} />
-        )}
+        {status === 'vote_nomination' &&
+          !hasVoted && <ShadowButton text="Ja" onClick={this.handleApproveClicked} />}
+        {status === 'vote_nomination' &&
+          !hasVoted && <ShadowButton text="Nein" onClick={this.handleDeclineClicked} />}
         {status === 'presidentDiscard' &&
           name === president && <div> Please choose one policy to discard </div>}
         {status === 'chancellorDiscard' &&

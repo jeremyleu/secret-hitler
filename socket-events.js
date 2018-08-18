@@ -139,7 +139,7 @@ exports.initGame = (io, socket, app) => {
     io.in(roomKey).emit(CURRENT_PRESIDENT, { president, status });
   });
 
-  socket.on('electChancellor', (chancellor, roomKey, turn, president) => {
+  socket.on('electChancellor', (chancellor, roomKey, turn) => {
     const status = VOTE_NOMINATION;
     io.in(roomKey).emit(ELECT_CHANCELLOR, { chancellor, status, turn });
   });
@@ -160,7 +160,6 @@ exports.initGame = (io, socket, app) => {
   socket.on('presidentPolicy', (roomKey, president) => {
     const game = currentGames[roomKey];
     const status = 'presidentDiscard';
-
     game.policies();
 
     const { draw } = game;
