@@ -56,27 +56,32 @@ export default class Game {
   };
 
   policies = () => {
-    console.log(this.deck.length);
     if (this.turnNum === 1) {
       shuffle(this.deck);
     }
     let i = 0;
     while (i < 3) {
-      if (this.deck.length === 1) {
+      if (this.deck.length <= 3) {
         shuffle(this.discard);
-        this.discard.unshift(this.deck.pop());
+        for(let j = 0; j < this.deck.length; j++){
+          this.discard.unshift(this.deck.pop());
+        }
+        console.log(this.discard.length + "discard");
         this.deck = this.discard;
+        console.log(this.deck.length + "deck1");
         this.discard = [];
         console.log('deck reshuffled');
       }
       this.draw[i] = this.deck.pop();
       i++;
     }
+    console.log(this.deck.length + "deck");
   };
 
   discardPolicy = (policyIdx) => {
     this.discard.push(this.draw[policyIdx]);
     this.draw.splice(policyIdx, 1);
+    console.log(this.draw.length + "draw pile after spliced");
   };
 
   playPolicy = () => {
@@ -85,6 +90,7 @@ export default class Game {
     } else if (this.draw[0] === 'liberal') {
       this.liberalScore++;
     }
+    this.discard.push(this.draw.pop());
   };
 
   presidentNext = (index) => {

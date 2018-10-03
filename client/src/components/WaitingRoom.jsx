@@ -13,7 +13,6 @@ import {
   chancellorPolicy,
   playPolicy,
   nextPresident,
-  voteStatus,
 } from '../actions';
 import ShadowButton from './ShadowButton';
 
@@ -60,6 +59,23 @@ class WaitingRoom extends Component {
     });
   }
 
+  componentDidUpdate = () => {
+    const {
+      voteResult, status, president, name, roomKey, players,
+    } = this.props;
+    if (voteResult && status === 'voteRecord' && president === name) {
+      console.log('policy');
+      this.props.dispatch(presidentPolicy(roomKey, president));
+    }
+
+    if (voteResult === false && status === 'voteRecord') {
+      const presidentIndex = players.find(player => player.name === president);
+      const index = players.indexOf(presidentIndex);
+      console.log(index);
+      this.props.dispatch(nextPresident(roomKey, index));
+    }
+  };
+
   handleStartClicked = () => {
     const { roomKey } = this.props;
     this.props.dispatch(assignRoles(roomKey));
@@ -83,7 +99,6 @@ class WaitingRoom extends Component {
     } = this.props;
     const vote = { voteChoice: true, playerName: name };
     this.props.dispatch(votes(vote, roomKey, president, chancellor, turn, players));
-    this.props.dispatch(voteStatus());
   };
 
   handleDeclineClicked = () => {
@@ -92,7 +107,6 @@ class WaitingRoom extends Component {
     } = this.props;
     const vote = { voteChoice: false, playerName: name };
     this.props.dispatch(votes(vote, roomKey, president, chancellor, turn, players));
-    this.props.dispatch(voteStatus());
   };
 
   handlePolicyClicked = (policyIdx) => {
@@ -118,7 +132,6 @@ class WaitingRoom extends Component {
       status,
       chancellor,
       voteResult,
-      roomKey,
       policies,
       liberalScore,
       fascistScore,
@@ -136,18 +149,6 @@ class WaitingRoom extends Component {
     const checkStatus = status === 'presidentNominate';
     const checkChancellorStatus =
       status === 'presidentNominate' || status === 'waitingRoom' || status === 'vote_nomination';
-    if (voteResult && status === 'voteRecord' && president === name) {
-      console.log('policy');
-      this.props.dispatch(presidentPolicy(roomKey, president));
-    }
-
-    if (voteResult === false && status === 'voteRecord') {
-      const presidentIndex = players.find(player => player.name === president);
-      const index = players.indexOf(presidentIndex);
-      console.log(index);
-      this.props.dispatch(nextPresident(roomKey, index));
-    }
-
     return (
       <div className="waiting-room">
         {role && <div className="role"> Your role is {role} </div>}

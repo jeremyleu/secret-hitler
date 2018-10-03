@@ -68,8 +68,14 @@ export const currentChancellor = (chancellor, status, turn) => ({
   turn,
 });
 
-export const votes = (vote, roomKey, president, chancellor, turn, players) => () =>
+export const voteStatus = () => ({
+  type: HAS_VOTED,
+});
+
+export const votes = (vote, roomKey, president, chancellor, turn, players) => (dispatch) => {
   socket.emit('votes', vote, roomKey, president, chancellor, turn, players);
+  dispatch(voteStatus());
+};
 
 export const currentVotes = (voteResult, status) => ({
   type: CURRENT_VOTES,
@@ -100,10 +106,6 @@ export const updateScore = (liberalScore, fascistScore, status) => ({
 });
 
 export const nextPresident = (roomKey, index) => () => socket.emit('nextPresident', roomKey, index);
-
-export const voteStatus = () => ({
-  type: HAS_VOTED,
-});
 
 export const prevPresident = president => ({
   type: PREVIOUS_PRESIDENT,
