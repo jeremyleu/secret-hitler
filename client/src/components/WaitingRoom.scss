@@ -3,6 +3,7 @@
 .player-list {
   box-shadow: makelongshadow(#000, 7);
   border-radius: 0.25rem;
+  margin-bottom: 20px;
 
   .player-list-item {
     border: 1px solid #000;
@@ -10,4 +11,12 @@
       background-color: #eee;
     }
   }
+}
+
+.role {
+  margin-bottom: 20px;
+}
+
+.start-button {
+  margin-bottom: 20px;
 }

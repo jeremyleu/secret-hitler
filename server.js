@@ -11,8 +11,9 @@ import { initGame } from './socket-events';
 const app = express();
 const server = require('http').createServer(app);
 
-const client = process.env.REDIS_URL ? redis.createClient(process.env.REDIS_URL) :
-  redis.createClient();
+const client = process.env.REDIS_URL
+  ? redis.createClient(process.env.REDIS_URL)
+  : redis.createClient();
 
 const options = {
   client,
@@ -42,11 +43,14 @@ io.use(sharedsession(sessionMiddleware));
 
 io.sockets.on('connection', (socket) => {
   console.log('connected to socket.io');
-  const { handshake: { session } } = socket;
+  const {
+    handshake: { session },
+  } = socket;
 
   session.connected = true;
-  session.save((err) => { /* handle error */
-    console.log("error: " + err);
+  session.save((err) => {
+    /* handle error */
+    console.log(`error: ${err}`);
   });
 
   initGame(io, socket, app);
